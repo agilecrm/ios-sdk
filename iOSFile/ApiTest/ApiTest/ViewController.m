@@ -2,8 +2,8 @@
 //  ViewController.m
 //  ApiTest
 //
-//  Created by Phelipe Maia on 2/1/16.
-//  Copyright © 2016 Aiam. All rights reserved.
+//  Created by Ghanshyam on 28/04/16.
+//  Copyright © 2016 Ghanshyam. All rights reserved.
 //
 
 #import "ViewController.h"
