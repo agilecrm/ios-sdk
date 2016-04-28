@@ -27,7 +27,7 @@
 
 - (IBAction)contacts;
 {
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"jasonwoodlif" andKey:@"kh6ads340aql34j6augl8ahbhj" andEmail:@"narayanrupraut@agilecrm.com"];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
     [[manager contactAPI] listContacts:^(NSMutableArray *contacts) {
         for (Contact *yourVar in contacts) {
             NSLog(@"%@", yourVar.contactId);
@@ -44,7 +44,7 @@
 
 - (IBAction)specificContact;
 {
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"jasonwoodlif" andKey:@"kh6ads340aql34j6augl8ahbhj" andEmail:@"narayanrupraut@agilecrm.com"];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
     [[manager contactAPI] getContactWithId:@"5655869022797824" onCompletion:^(Contact *contact) {
         for (Field *yourVar2 in contact.properties) {
             NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
@@ -58,7 +58,7 @@
 
 - (IBAction)specificEmailContact;
 {
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"jasonwoodlif" andKey:@"kh6ads340aql34j6augl8ahbhj" andEmail:@"narayanrupraut@agilecrm.com"];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
     [[manager contactAPI] getContactWithEmail:@"ff2@gmail.com" onCompletion:^(Contact *contact) {
         for (Field *yourVar2 in contact.properties) {
             NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
@@ -81,7 +81,7 @@
     NSNumber *leadScore = [[NSNumber alloc] initWithInt:20];
     NSNumber *starValue = [[NSNumber alloc] initWithInt:30];
     Contact *contact = [[Contact alloc] initWithProperties:properties andTags:tags andLeadScore:leadScore andStarValue:starValue];
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"jasonwoodlif" andKey:@"kh6ads340aql34j6augl8ahbhj" andEmail:@"narayanrupraut@agilecrm.com"];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
     [[manager contactAPI] add:contact onCompletion:^(Contact *contact) {
         self.result.text = [NSString stringWithFormat:@"id %@", contact.contactId];
         NSLog (@"id %@", contact.contactId);
@@ -106,7 +106,7 @@
     NSNumber *starValue = [[NSNumber alloc] initWithInt:30];
     Contact *contact = [[Contact alloc] initWithProperties:properties andTags:tags andLeadScore:leadScore andStarValue:starValue];
     contact.contactId = @"5754903989321728";
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"jasonwoodlif" andKey:@"kh6ads340aql34j6augl8ahbhj" andEmail:@"narayanrupraut@agilecrm.com"];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
     [[manager contactAPI] update:contact onCompletion:^(Contact *contact) {
         for (Field *yourVar2 in contact.properties) {
             NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
@@ -125,7 +125,7 @@
     
     NSDictionary *customFieldsElem = [[NSDictionary alloc] initWithObjectsAndKeys:@"test", @"name", @"ABC", @"value", nil];
     NSArray *customFields = [[NSArray alloc] initWithObjects:customFieldsElem, nil];
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"jasonwoodlif" andKey:@"kh6ads340aql34j6augl8ahbhj" andEmail:@"narayanrupraut@agilecrm.com"];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
     [[manager contactAPI] updateWithId:@"5754903989321728" andSystemFields:systemFields andCustomFields:customFields onCompletion:^(Contact *contact) {
         for (Field *yourVar2 in contact.properties) {
             NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
@@ -139,7 +139,7 @@
 
 - (IBAction)deleteContactById;
 {
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"jasonwoodlif" andKey:@"kh6ads340aql34j6augl8ahbhj" andEmail:@"narayanrupraut@agilecrm.com"];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
     [[manager contactAPI] remove:@"5754903989321728" onCompletion:^(BOOL success) {
         if (success) {
             NSLog (@"REMOVED");
