@@ -1,4 +1,4 @@
-Agile CRM iOS SDK API
+Agile CRM iOS SDK
 =================
 
 [Agile CRM] (https://www.agilecrm.com/) is a new breed CRM software with sales and marketing automation.
