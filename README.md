@@ -11,11 +11,10 @@ Table of contents
 **[API's details](#apis-details)**
 
 **[1 Contact](#1-contact)**
-  * [1 To get a contact by email](#11-to-get-a-contact-by-email)
-  * [2 To get a contact by contact ID](#12-to-get-a-contact-by-contact-id)
-  * [3 To create a contact](#13-to-create-a-contact)
+  * [1 To create a contact](#11-to-create-a-contact)
+  * [2 To fetch contact data](#12-to-fetch-contact-data)
+  * [3 To delete a contact](#13-to-delete-a-contact)
   * [4 To update a contact](#14-to-update-a-contact)
-  * [5 To delete a contact](#15-to-delete-a-contact)
 
 
 API's Details
