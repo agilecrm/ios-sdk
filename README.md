@@ -15,8 +15,8 @@ Table of contents
   * [2 To fetch contact data](#12-to-fetch-contact-data)
   * [3 To delete a contact](#13-to-delete-a-contact)
   * [4 To update a contact](#14-to-update-a-contact)
-  * [5 Add tag to a contact](#15-to-update-a-contact)
-  * [6 Remove tag to a contact](#16-to-update-a-contact)
+  * [5 Add tag to a contact](#15-add-tag-to-a-contact)
+  * [6 Remove tag to a contact](#16-delete-tag-to-a-contact)
 
 **[2. Deal (Opportunity)](#2-deal)**
   * [1 To create a deal](#21-to-create-a-deal)
