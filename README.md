@@ -32,12 +32,12 @@ Requirements
 
 3. Setting Domain Name and Api Key
 
-![Finding Domain name, email and api key] (https://raw.githubusercontent.com/agilecrm/c-sharp-api/master/AgileCRMapi.png)
+![Finding Domain name, email and API key] (https://raw.githubusercontent.com/agilecrm/c-sharp-api/master/AgileCRMapi.png)
 
-In the above image, api key is present at the "Api & Analytics" tab at `https://mycompany.agilecrm.com/#account-prefs`.
+In the above image, API key is present at the "API & Analytics" tab at `https://mycompany.agilecrm.com/#account-prefs`.
 
         Domain Name : mycompany
-        Api Key     : myagilecrmapikey
+        API Key     : myagilecrmapikey
         Email       : myagilecrmemail
 
 So you have to update your `https://github.com/agilecrm/ios-sdk/blob/master/iOSFile/ApiTest/ApiTest/ViewController.m`
@@ -233,6 +233,164 @@ API's Details
 
 ```javascript
 - (IBAction)deleteDealById;
+{
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+    [[manager contactAPI] remove:@"5754903989321728" onCompletion:^(BOOL success) {
+        if (success) {
+            NSLog (@"REMOVED");
+            self.result.text = @"REMOVED 5754903989321728";
+        }
+    } onError:^(NSError *originalError) {
+        NSLog(@"Error");
+    }];
+    
+}
+```
+
+## 3. Note
+#### 3.1 To create a Note 
+
+```javascript
+- (IBAction)addNote;
+{
+    NSArray *contactIDS = [[NSArray alloc] initWithObjects:@"585658565856", @"578988989988", nil];
+
+    NSNumber *subject = [[NSNumber alloc] initWithString:hello];
+    NSNumber *description = [[NSNumber alloc] initWithString:this is note];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+    [[manager dealAPI] add:note onCompletion:^(Note *note) {
+        
+        
+    } onError:^(NSError *originalError) {
+        NSLog(@"Error");
+    }];
+    
+}
+```
+```
+
+#### 3.2 To update a note 
+
+- [**Acceptable request representation for contact**](https://github.com/agilecrm/rest-api#acceptable-request-representation-10)
+
+```javascript
+- (IBAction)updateNote;
+{
+    NSArray *contactIDS = [[NSArray alloc] initWithObjects:@"585658565856", @"578988989988", nil];
+
+    NSNumber *subject = [[NSNumber alloc] initWithString:hello];
+    NSNumber *description = [[NSNumber alloc] initWithString:this is note];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+    [[manager dealAPI] add:note onCompletion:^(Note *note) {
+        
+        
+    } onError:^(NSError *originalError) {
+        NSLog(@"Error");
+    }];
+    
+}
+```
+
+#### 3.3 Get note by ID
+
+
+```javascript
+- (IBAction)getNotes;
+{
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+    [[manager contactAPI] getDealWithId:@"5655869022797824" onCompletion:^(Deal *deal) {
+        
+    } onError:^(NSError *originalError) {
+        NSLog(@"Error");
+    }];
+    
+}
+```
+
+#### 3.4 Delete note by ID
+
+
+```javascript
+- (IBAction)deleteNoteById;
+{
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+    [[manager contactAPI] remove:@"5754903989321728" onCompletion:^(BOOL success) {
+        if (success) {
+            NSLog (@"REMOVED");
+            self.result.text = @"REMOVED 5754903989321728";
+        }
+    } onError:^(NSError *originalError) {
+        NSLog(@"Error");
+    }];
+    
+}
+```
+
+## 4. Task
+#### 4.1 To create a Note 
+
+```javascript
+- (IBAction)addTask;
+{
+    NSArray *contactIDS = [[NSArray alloc] initWithObjects:@"585658565856", @"578988989988", nil];
+
+    NSNumber *name = [[NSNumber alloc] initWithString:hello];
+    NSNumber *owner = [[NSNumber alloc] initWithString:this is note];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+    [[manager dealAPI] add:note onCompletion:^(Note *note) {
+        
+        
+    } onError:^(NSError *originalError) {
+        NSLog(@"Error");
+    }];
+    
+}
+```
+```
+
+#### 4.2 To update a task 
+
+- [**Acceptable request representation for contact**](https://github.com/agilecrm/rest-api#acceptable-request-representation-10)
+
+```javascript
+- (IBAction)updateTask;
+{
+    NSArray *contactIDS = [[NSArray alloc] initWithObjects:@"585658565856", @"578988989988", nil];
+
+    NSNumber *name = [[NSNumber alloc] initWithString:hello];
+    NSNumber *owner = [[NSNumber alloc] initWithString:this is note];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+    [[manager dealAPI] add:note onCompletion:^(Note *note) {
+        
+        
+    } onError:^(NSError *originalError) {
+        NSLog(@"Error");
+    }];
+    
+}
+```
+
+#### 4.3 Get task by ID
+
+
+```javascript
+- (IBAction)getTasks;
+{
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+    [[manager contactAPI] getDealWithId:@"5655869022797824" onCompletion:^(Deal *deal) {
+        
+    } onError:^(NSError *originalError) {
+        NSLog(@"Error");
+    }];
+    
+}
+```
+
+#### 4.4 Delete task by ID
+
+
+```javascript
+- (IBAction)deleteTaskById;
 {
     AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
     [[manager contactAPI] remove:@"5754903989321728" onCompletion:^(BOOL success) {
