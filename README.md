@@ -33,6 +33,7 @@ Table of contents
   * [2 To update a deal](#22-to-update-a-deal)
   * [3 Get deal by ID](#23-get-deal-by-id)
   * [4 Delete deal by ID](#24-delete-deal-by-id)
+
 Requirements
 ------------
 
@@ -193,7 +194,6 @@ API's Details
     }];
     
 }
-```
 ```
 
 #### 2.2 To update a deal 
