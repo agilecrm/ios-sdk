@@ -41,7 +41,7 @@ Requirements
 
 2. iOS 8.3 tested platform
 
-3. Setting Domain Name and Api Key
+3. Setting Domain Name and API Key
 
 ![Finding Domain name, email and API key] (https://raw.githubusercontent.com/agilecrm/c-sharp-api/master/AgileCRMapi.png)
 
