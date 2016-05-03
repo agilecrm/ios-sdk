@@ -15,6 +15,8 @@ Table of contents
   * [2 To fetch contact data](#12-to-fetch-contact-data)
   * [3 To delete a contact](#13-to-delete-a-contact)
   * [4 To update a contact](#14-to-update-a-contact)
+  * [5 Add tag to a contact](#15-to-update-a-contact)
+  * [6 Remove tag to a contact](#16-to-update-a-contact)
 
 **[2. Deal (Opportunity)](#2-deal)**
   * [1 To create a deal](#21-to-create-a-deal)
@@ -161,8 +163,46 @@ API's details
     NSNumber *starValue = [[NSNumber alloc] initWithInt:30];
     Contact *contact = [[Contact alloc] initWithProperties:properties andTags:tags andLeadScore:leadScore andStarValue:starValue];
     contact.contactId = @"5754903989321728";
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"jasonwoodlif" andKey:@"kh6ads340aql34j6augl8ahbhj" andEmail:@"narayanrupraut@agilecrm.com"];
+    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
     [[manager contactAPI] update:contact onCompletion:^(Contact *contact) {
+        for (Field *yourVar2 in contact.properties) {
+            NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
+            self.result.text = [NSString stringWithFormat:@"%@ - %@", yourVar2.name, yourVar2.value];
+        }
+    } onError:^(NSError *originalError) {
+        NSLog(@"Error");
+    }];
+```
+
+#### 1.5 Add tag to a contact
+
+```javascript
+     NSArray *tags = [[NSArray alloc] initWithObjects:@"Tag1", @"Tag2", nil];
+    
+    
+    Contact *contact = [[Contact alloc] Tags:tags];
+    contact.contactId = @"5754903989321728";
+   AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+    [[manager contactAPI] add:contact onCompletion:^(Contact *contact) {
+        for (Field *yourVar2 in contact.properties) {
+            NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
+            self.result.text = [NSString stringWithFormat:@"%@ - %@", yourVar2.name, yourVar2.value];
+        }
+    } onError:^(NSError *originalError) {
+        NSLog(@"Error");
+    }];
+```
+
+#### 1.6 Delete tag to a contact
+
+```javascript
+     NSArray *tags = [[NSArray alloc] initWithObjects:@"Tag1", @"Tag2", nil];
+    
+    
+    Contact *contact = [[Contact alloc] Tags:tags];
+    contact.contactId = @"5754903989321728";
+   AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+    [[manager contactAPI] delete:contact onCompletion:^(Contact *contact) {
         for (Field *yourVar2 in contact.properties) {
             NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
             self.result.text = [NSString stringWithFormat:@"%@ - %@", yourVar2.name, yourVar2.value];
