@@ -23,16 +23,16 @@ Table of contents
   * [4 Delete deal by ID](#24-delete-deal-by-id)
 
 **[3. Note ](#3-note)**
-  * [1 To create a Note](#31-to-create-a-note)
-  * [2 To update a deal](#22-to-update-a-deal)
-  * [3 Get deal by ID](#23-get-deal-by-id)
-  * [4 Delete deal by ID](#24-delete-deal-by-id)
+  * [1 To create a note](#31-to-create-a-note)
+  * [2 To update a note](#32-to-update-a-note)
+  * [3 Get note by ID](#33-get-note-by-id)
+  * [4 Delete note by ID](#34-delete-note-by-id)
  
-**[2. Deal (Opportunity)](#2-deal)**
-  * [1 To create a deal](#21-to-create-a-deal)
-  * [2 To update a deal](#22-to-update-a-deal)
-  * [3 Get deal by ID](#23-get-deal-by-id)
-  * [4 Delete deal by ID](#24-delete-deal-by-id)
+**[4. Task ](#4-task)**
+  * [1 To create a task](#41-to-create-a-task)
+  * [2 To update a task](#42-to-update-a-task)
+  * [3 Get task by ID](#43-get-task-by-id)
+  * [4 Delete task by ID](#44-delete-task-by-id)
 
 Requirements
 ------------
@@ -335,7 +335,7 @@ API's Details
 ```
 
 ## 4. Task
-#### 4.1 To create a Note 
+#### 4.1 To create a task 
 
 ```javascript
 - (IBAction)addTask;
