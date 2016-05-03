@@ -22,6 +22,31 @@ Table of contents
   * [3 Get deal by ID](#23-get-deal-by-id)
   * [4 Delete deal by ID](#24-delete-deal-by-id)
 
+
+Requirements
+------------
+
+1. Xcode with minimum 6.0 and OS X 10.10 
+
+2. iOS 8.3 tested platform
+
+3. Setting Domain Name and Api Key
+
+![Finding Domain name, email and api key] (https://raw.githubusercontent.com/agilecrm/c-sharp-api/master/AgileCRMapi.png)
+
+In the above image, api key is present at the "Api & Analytics" tab at `https://mycompany.agilecrm.com/#account-prefs`.
+
+        Domain Name : mycompany
+        Api Key     : myagilecrmapikey
+        Email       : myagilecrmemail
+
+So you have to update your `https://github.com/agilecrm/ios-sdk/blob/master/iOSFile/ApiTest/ApiTest/ViewController.m`
+
+	
+		/*******Please insert your Domain Name and email Api Key here*********/
+ AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+		/***************************************************************/
+
 API's Details
 -------------
 ## 1. Contact
