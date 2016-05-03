@@ -41,14 +41,14 @@ Requirements
 
 2. iOS 8.3 tested platform
 
-3. Setting Domain Name and API Key
+3. Setting domain name and API key
 
-![Finding Domain name, email and API key] (https://raw.githubusercontent.com/agilecrm/c-sharp-api/master/AgileCRMapi.png)
+![Finding domain name, email and API key] (https://raw.githubusercontent.com/agilecrm/c-sharp-api/master/AgileCRMapi.png)
 
 In the above image, API key is present at the "API & Analytics" tab at `https://mycompany.agilecrm.com/#account-prefs`.
 
-        Domain Name : mycompany
-        API Key     : myagilecrmapikey
+        Domain name : mycompany
+        API key     : myagilecrmapikey
         Email       : myagilecrmemail
 
 So you have to update your `https://github.com/agilecrm/ios-sdk/blob/master/iOSFile/ApiTest/ApiTest/ViewController.m`
@@ -58,7 +58,7 @@ So you have to update your `https://github.com/agilecrm/ios-sdk/blob/master/iOSF
  AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
 ```
 
-API's Details
+API's details
 -------------
 ## 1. Contact
 #### 1.1 To create a contact 
