@@ -22,7 +22,17 @@ Table of contents
   * [3 Get deal by ID](#23-get-deal-by-id)
   * [4 Delete deal by ID](#24-delete-deal-by-id)
 
-
+**[3. Note ](#3-note)**
+  * [1 To create a Note](#31-to-create-a-note)
+  * [2 To update a deal](#22-to-update-a-deal)
+  * [3 Get deal by ID](#23-get-deal-by-id)
+  * [4 Delete deal by ID](#24-delete-deal-by-id)
+ 
+**[2. Deal (Opportunity)](#2-deal)**
+  * [1 To create a deal](#21-to-create-a-deal)
+  * [2 To update a deal](#22-to-update-a-deal)
+  * [3 Get deal by ID](#23-get-deal-by-id)
+  * [4 Delete deal by ID](#24-delete-deal-by-id)
 Requirements
 ------------
 
@@ -267,11 +277,9 @@ API's Details
     
 }
 ```
-```
 
 #### 3.2 To update a note 
 
-- [**Acceptable request representation for contact**](https://github.com/agilecrm/rest-api#acceptable-request-representation-10)
 
 ```javascript
 - (IBAction)updateNote;
@@ -346,8 +354,6 @@ API's Details
     
 }
 ```
-```
-
 #### 4.2 To update a task 
 
 - [**Acceptable request representation for contact**](https://github.com/agilecrm/rest-api#acceptable-request-representation-10)
