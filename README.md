@@ -43,9 +43,9 @@ In the above image, api key is present at the "Api & Analytics" tab at `https://
 So you have to update your `https://github.com/agilecrm/ios-sdk/blob/master/iOSFile/ApiTest/ApiTest/ViewController.m`
 
 	
-		/*******Please insert your Domain Name and email Api Key here*********/
+```javascript
  AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-		/***************************************************************/
+```
 
 API's Details
 -------------
