@@ -3,6 +3,8 @@ Agile CRM iOS SDK
 
 [Agile CRM] (https://www.agilecrm.com/) is a new breed CRM software with sales and marketing automation.
 
+- [**Reference**](https://github.com/agilecrm/rest-api)
+
 Table of contents
 ---------------
 
@@ -30,12 +32,6 @@ Table of contents
   * [3 Get note by ID](#33-get-note-by-id)
   * [4 Delete note by ID](#34-delete-note-by-id)
  
-**[4. Task ](#4-task)**
-  * [1 To create a task](#41-to-create-a-task)
-  * [2 To update a task](#42-to-update-a-task)
-  * [3 Get task by ID](#43-get-task-by-id)
-  * [4 Delete task by ID](#44-delete-task-by-id)
-
 Requirements
 ------------
 
@@ -44,6 +40,8 @@ Requirements
 2. iOS 8.3 tested platform
 
 3. Setting domain name and API key
+
+4. You can pull all code from the git or just copy method from `https://github.com/agilecrm/ios-sdk/blob/master/iOSFile/AgileSDK/AgileSDK/ViewController.m`  and test directly with your domain,email and rest api key
 
 ![Finding domain name, email and API key] (https://raw.githubusercontent.com/agilecrm/c-sharp-api/master/AgileCRMapi.png)
 
@@ -57,7 +55,9 @@ So you have to update your `https://github.com/agilecrm/ios-sdk/blob/master/iOSF
 
 	
 ```javascript
- AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
+  NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts/5745057659355136"];
+  NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+  
 ```
 
 API's details
@@ -68,28 +68,46 @@ API's details
 - [**Acceptable request representation for contact**](https://github.com/agilecrm/rest-api#acceptable-request-representation)
 
 ```javascript
-- (IBAction)addContact;
-{
-    NSMutableArray *properties = [[NSMutableArray alloc] init];
-    Field *f = [[Field alloc] initWithName:@"first_name" andValue:@"Sam" andType:@"SYSTEM"];
-    [properties addObject:f];
+- (IBAction)createContact:(id)sender {
+    // Your JSON data:
+    NSString *colorArray = @"{\"lead_score\":44,  \"tags\":[\"tag1\", \"tag2\"], \"properties\":[{\"type\":\"SYSTEM\", \"name\":\"email\",\"value\":\"jason12345623y@gmail.com\"}, {\"type\":\"SYSTEM\", \"name\":\"first_name\", \"value\":\"First_name\"}, {\"type\":\"SYSTEM\", \"name\":\"last_name\", \"value\":\"Last_name\"}]}";
+    NSLog(@"colorArray=%@", colorArray);
     
-    NSArray *tags = [[NSArray alloc] initWithObjects:@"Tag1", @"Tag2", nil];
+    // Convert to JSON object:
+    NSArray *jsonObject = [NSJSONSerialization JSONObjectWithData:[colorArray dataUsingEncoding:NSUTF8StringEncoding]
+                                                          options:0 error:NULL];
+    
+    NSLog(@"jsonObject=%@", jsonObject);
 
-    NSNumber *leadScore = [[NSNumber alloc] initWithInt:20];
-    NSNumber *starValue = [[NSNumber alloc] initWithInt:30];
-    Contact *contact = [[Contact alloc] initWithProperties:properties andTags:tags andLeadScore:leadScore andStarValue:starValue];
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] add:contact onCompletion:^(Contact *contact) {
-        self.result.text = [NSString stringWithFormat:@"id %@", contact.contactId];
-        NSLog (@"id %@", contact.contactId);
-        for (Field *yourVar2 in contact.properties) {
-            NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+    NSData *requestData = [colorArray dataUsingEncoding:NSUTF8StringEncoding];
     
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:[NSString stringWithFormat:@"%d", [requestData length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody: requestData];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
 ```
 
@@ -98,53 +116,99 @@ API's details
 ###### by id
 
 ```javascript
-- (IBAction)specificContact;
-{
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] getContactWithId:@"5655869022797824" onCompletion:^(Contact *contact) {
-        for (Field *yourVar2 in contact.properties) {
-            NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
-            self.result.text = [NSString stringWithFormat:@"%@ - %@", yourVar2.name, yourVar2.value];
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)getContactById:(id)sender {
+    NSLog(@"Get Contact By ID");
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts/5745057659355136"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
 ```
 ###### by email
 
 ```javascript
-- (IBAction)specificEmailContact;
-{
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] getContactWithEmail:@"ff2@gmail.com" onCompletion:^(Contact *contact) {
-        for (Field *yourVar2 in contact.properties) {
-            NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
-            self.result.text = [NSString stringWithFormat:@"%@ - %@", yourVar2.name, yourVar2.value];
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)getContactByEmail:(id)sender {
+    NSLog(@"Get Contact By ID");
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts/search/email/{email}"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
 ```
 
 #### 1.3 To delete a contact
 
 ```javascript
-- (IBAction)deleteContactById;
-{
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] remove:@"5754903989321728" onCompletion:^(BOOL success) {
-        if (success) {
-            NSLog (@"REMOVED");
-            self.result.text = @"REMOVED 5754903989321728";
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)deleteContactById:(id)sender {
     
+    NSLog(@"delete contact by ID");
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts/5680432024649728"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    [request setHTTPMethod:@"DELETE"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
 ```
 
@@ -153,63 +217,139 @@ API's details
 - [**Acceptable request representation for contact**](https://github.com/agilecrm/rest-api#acceptable-request-representation-1)
 
 ```javascript
-    NSMutableArray *properties = [[NSMutableArray alloc] init];
-    Field *f = [[Field alloc] initWithName:@"first_name" andValue:@"Phelipe2" andType:@"SYSTEM"];
-    [properties addObject:f];
+- (IBAction)updateContactById:(id)sender {
+    // Your JSON data:
+    NSString *colorArray = @"{\"id\":5729057832435712, \"properties\":[{\"type\":\"SYSTEM\", \"name\":\"email\",\"value\":\"jason12345623y@gmail.com\"}, {\"type\":\"SYSTEM\", \"name\":\"first_name\", \"value\":\"laki\"}, {\"type\":\"SYSTEM\", \"name\":\"last_name\", \"value\":\"Ali\"}]}";
+    NSLog(@"colorArray=%@", colorArray);
     
-    NSArray *tags = [[NSArray alloc] initWithObjects:@"Tag1", @"Tag2", nil];
+    // Convert to JSON object:
+    NSArray *jsonObject = [NSJSONSerialization JSONObjectWithData:[colorArray dataUsingEncoding:NSUTF8StringEncoding]
+                                                          options:0 error:NULL];
     
-    NSNumber *leadScore = [[NSNumber alloc] initWithInt:20];
-    NSNumber *starValue = [[NSNumber alloc] initWithInt:30];
-    Contact *contact = [[Contact alloc] initWithProperties:properties andTags:tags andLeadScore:leadScore andStarValue:starValue];
-    contact.contactId = @"5754903989321728";
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] update:contact onCompletion:^(Contact *contact) {
-        for (Field *yourVar2 in contact.properties) {
-            NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
-            self.result.text = [NSString stringWithFormat:@"%@ - %@", yourVar2.name, yourVar2.value];
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+    NSLog(@"jsonObject=%@", jsonObject);
+
+    NSData *requestData = [colorArray dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts/edit-properties"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    [request setHTTPMethod:@"PUT"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:[NSString stringWithFormat:@"%d", [requestData length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody: requestData];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
+}
 ```
 
 #### 1.5 Add tag to a contact
 
 ```javascript
-     NSArray *tags = [[NSArray alloc] initWithObjects:@"Tag1", @"Tag2", nil];
+- (IBAction)updateTagById:(id)sender {
+    // Your JSON data:
+    NSString *colorArray = @"{\"id\":5749641194766336, \"tags\":[\"tag1\", \"tag2\"]}";
+    NSLog(@"colorArray=%@", colorArray);
     
+    // Convert to JSON object:
+    NSArray *jsonObject = [NSJSONSerialization JSONObjectWithData:[colorArray dataUsingEncoding:NSUTF8StringEncoding]
+                                                          options:0 error:NULL];
     
-    Contact *contact = [[Contact alloc] Tags:tags];
-    contact.contactId = @"5754903989321728";
-   AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] add:contact onCompletion:^(Contact *contact) {
-        for (Field *yourVar2 in contact.properties) {
-            NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
-            self.result.text = [NSString stringWithFormat:@"%@ - %@", yourVar2.name, yourVar2.value];
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+    NSLog(@"jsonObject=%@", jsonObject);
+
+    NSData *requestData = [colorArray dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts/edit/tags"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    [request setHTTPMethod:@"PUT"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:[NSString stringWithFormat:@"%d", [requestData length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody: requestData];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
+}
 ```
 
 #### 1.6 Delete tag to a contact
 
 ```javascript
-     NSArray *tags = [[NSArray alloc] initWithObjects:@"Tag1", @"Tag2", nil];
+- (IBAction)deleteTagById:(id)sender {
+    // Your JSON data:
+    NSString *colorArray = @"{\"id\":5749641194766336, \"tags\":[\"tag1\", \"tag2\"]}";
+    NSLog(@"colorArray=%@", colorArray);
     
+    // Convert to JSON object:
+    NSArray *jsonObject = [NSJSONSerialization JSONObjectWithData:[colorArray dataUsingEncoding:NSUTF8StringEncoding]
+                                                          options:0 error:NULL];
     
-    Contact *contact = [[Contact alloc] Tags:tags];
-    contact.contactId = @"5754903989321728";
-   AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] delete:contact onCompletion:^(Contact *contact) {
-        for (Field *yourVar2 in contact.properties) {
-            NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
-            self.result.text = [NSString stringWithFormat:@"%@ - %@", yourVar2.name, yourVar2.value];
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+    NSLog(@"jsonObject=%@", jsonObject);
+
+    NSData *requestData = [colorArray dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts/delete/tags"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    [request setHTTPMethod:@"PUT"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:[NSString stringWithFormat:@"%d", [requestData length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody: requestData];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
+}     
 ```
 
 ## 2. Deal
@@ -218,21 +358,46 @@ API's details
 - [**Acceptable request representation for contact**](https://github.com/agilecrm/rest-api#acceptable-request-representation-9)
 
 ```javascript
-- (IBAction)addDeal;
-{
-    NSArray *contatIDS = [[NSArray alloc] initWithObjects:@"585658565856", @"578988989988", nil];
-
-    NSNumber *expectedvalue = [[NSNumber alloc] initWithInt:20];
-    NSNumber *probability = [[NSNumber alloc] initWithInt:30];
-    Deal *deal = [[Deal alloc] initWithProperties:properties andTags:tags andLeadScore:leadScore andStarValue:starValue];
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager dealAPI] add:deal onCompletion:^(Deal *deal) {
-        self.result.text = [NSString stringWithFormat:@"id %@", deal.dealId];
-        
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)createDeal:()sender {
+    // Your JSON data:
+    NSString *colorArray = @"{\"name\":\"Deal-Tomato11111\",\"expected_value\":\"500\",\"probability\":90,\"close_date\":1455042600,\"milestone\":\"Proposal\",  \"contact_ids\":[\"5749641194766336\", \"5758948741218306\"], \"custom_data\":[{\"name\":\"Group Size\",\"value\":\"20\"}]}";
+    NSLog(@"colorArray=%@", colorArray);
     
+    // Convert to JSON object:
+    NSArray *jsonObject = [NSJSONSerialization JSONObjectWithData:[colorArray dataUsingEncoding:NSUTF8StringEncoding]
+                                                          options:0 error:NULL];
+    
+    NSLog(@"jsonObject=%@", jsonObject);
+
+    NSData *requestData = [colorArray dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/opportunity"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:[NSString stringWithFormat:@"%d", [requestData length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody: requestData];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
 ```
 
@@ -241,21 +406,46 @@ API's details
 - [**Acceptable request representation for contact**](https://github.com/agilecrm/rest-api#acceptable-request-representation-10)
 
 ```javascript
-- (IBAction)updateDeal;
-{
-    NSArray *contatIDS = [[NSArray alloc] initWithObjects:@"585658565856", @"578988989988", nil];
-
-    NSNumber *expectedvalue = [[NSNumber alloc] initWithInt:20];
-    NSNumber *probability = [[NSNumber alloc] initWithInt:30];
-    Deal *deal = [[Deal alloc] initWithProperties:properties andTags:tags andLeadScore:leadScore andStarValue:starValue];
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager dealAPI] add:deal onCompletion:^(Deal *deal) {
-        self.result.text = [NSString stringWithFormat:@"id %@", deal.dealId];
-        
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)updateDealById:()sender {
+    // Your JSON data:
+    NSString *colorArray = @"{\"id\":5722251114577920,\"name\":\"Deal-Tomato Updated\",\"expected_value\":\"900\",\"probability\":90,\"close_date\":1455042600,\"milestone\":\"Proposal\",  \"contact_ids\":[\"5749641194766336\", \"5758948741218306\"], \"custom_data\":[{\"name\":\"Group Size\",\"value\":\"20\"}]}";
+    NSLog(@"colorArray=%@", colorArray);
     
+    // Convert to JSON object:
+    NSArray *jsonObject = [NSJSONSerialization JSONObjectWithData:[colorArray dataUsingEncoding:NSUTF8StringEncoding]
+                                                          options:0 error:NULL];
+    
+    NSLog(@"jsonObject=%@", jsonObject);
+
+    NSData *requestData = [colorArray dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/opportunity/partial-update"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    [request setHTTPMethod:@"PUT"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:[NSString stringWithFormat:@"%d", [requestData length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody: requestData];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
 ```
 
@@ -263,18 +453,33 @@ API's details
 
 
 ```javascript
-- (IBAction)specificContact;
-{
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] getDealWithId:@"5655869022797824" onCompletion:^(Deal *deal) {
-        for (Field *yourVar2 in deal.properties) {
-            NSLog (@"%@ - %@", yourVar2.name, yourVar2.value);
-            self.result.text = [NSString stringWithFormat:@"%@ - %@", yourVar2.name, yourVar2.value];
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)getDealById:(id)sender {
+    NSLog(@"Get Contact By ID");
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/opportunity/5733975435771904"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
 ```
 
@@ -282,18 +487,33 @@ API's details
 
 
 ```javascript
-- (IBAction)deleteDealById;
-{
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] remove:@"5754903989321728" onCompletion:^(BOOL success) {
-        if (success) {
-            NSLog (@"REMOVED");
-            self.result.text = @"REMOVED 5754903989321728";
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)deleteDealById:(id)sender {
+    NSLog(@"Get Contact By ID");
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/opportunity/5733975435771904"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
+    [request setHTTPMethod:@"DELETE"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
 ```
 
@@ -301,41 +521,93 @@ API's details
 #### 3.1 To create a Note 
 
 ```javascript
-- (IBAction)addNote;
-{
-    NSArray *contactIDS = [[NSArray alloc] initWithObjects:@"585658565856", @"578988989988", nil];
-
-    NSNumber *subject = [[NSNumber alloc] initWithString:hello];
-    NSNumber *description = [[NSNumber alloc] initWithString:this is note];
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager dealAPI] add:note onCompletion:^(Note *note) {
-        
-        
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)createNote:()sender {
+    // Your JSON data:
+    NSString *colorArray = @"{\"subject\":\"Note subject hello \",\"description\":\"Note description gone successfull after contact paid us\", \"contact_ids\":[\"5696538890207232\", \"5758948741218306\"]}";
+    NSLog(@"colorArray=%@", colorArray);
     
+    // Convert to JSON object:
+    NSArray *jsonObject = [NSJSONSerialization JSONObjectWithData:[colorArray dataUsingEncoding:NSUTF8StringEncoding]
+                                                          options:0 error:NULL];
+    
+    NSLog(@"jsonObject=%@", jsonObject);
+
+    NSData *requestData = [colorArray dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/notes"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:[NSString stringWithFormat:@"%d", [requestData length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody: requestData];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
 ```
 
-#### 3.2 To update a note 
+#### 3.2 To create a note to a deal
 
 
 ```javascript
-- (IBAction)updateNote;
-{
-    NSArray *contactIDS = [[NSArray alloc] initWithObjects:@"585658565856", @"578988989988", nil];
-
-    NSNumber *subject = [[NSNumber alloc] initWithString:hello];
-    NSNumber *description = [[NSNumber alloc] initWithString:this is note];
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager dealAPI] add:note onCompletion:^(Note *note) {
-        
-        
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)createNoteToDeal:()sender {
+    // Your JSON data:
+    NSString *colorArray = @"{\"subject\":\"Note subject hello \",\"description\":\"Note description gone successfull after contact paid us\", \"deal_ids\":[\"5728337217454080\", \"5758948741218306\"]}";
+    NSLog(@"colorArray=%@", colorArray);
     
+    // Convert to JSON object:
+    NSArray *jsonObject = [NSJSONSerialization JSONObjectWithData:[colorArray dataUsingEncoding:NSUTF8StringEncoding]
+                                                          options:0 error:NULL];
+    
+    NSLog(@"jsonObject=%@", jsonObject);
+
+    NSData *requestData = [colorArray dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/opportunity/deals/notes"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:[NSString stringWithFormat:@"%d", [requestData length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody: requestData];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
 ```
 
@@ -343,110 +615,68 @@ API's details
 
 
 ```javascript
-- (IBAction)getNotes;
-{
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] getDealWithId:@"5655869022797824" onCompletion:^(Deal *deal) {
-        
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)getNoteById:(id)sender {
+    NSLog(@"Get Contact By ID");
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/notes/5745057659355136"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
+    
+    NSLog(@"End of test");
 }
+
 ```
 
 #### 3.4 Delete note by ID
 
 
 ```javascript
-- (IBAction)deleteNoteById;
-{
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] remove:@"5754903989321728" onCompletion:^(BOOL success) {
-        if (success) {
-            NSLog (@"REMOVED");
-            self.result.text = @"REMOVED 5754903989321728";
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+- (IBAction)deleteNoteById:(id)sender {
+    NSLog(@"Get Contact By ID");
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/notes/5745057659355136"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
-}
-```
-
-## 4. Task
-#### 4.1 To create a task 
-
-```javascript
-- (IBAction)addTask;
-{
-    NSArray *contactIDS = [[NSArray alloc] initWithObjects:@"585658565856", @"578988989988", nil];
-
-    NSNumber *name = [[NSNumber alloc] initWithString:hello];
-    NSNumber *owner = [[NSNumber alloc] initWithString:this is note];
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager dealAPI] add:note onCompletion:^(Note *note) {
-        
-        
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+    [request setHTTPMethod:@"DELETE"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     
-}
-```
-#### 4.2 To update a task 
-
-- [**Acceptable request representation for contact**](https://github.com/agilecrm/rest-api#acceptable-request-representation-10)
-
-```javascript
-- (IBAction)updateTask;
-{
-    NSArray *contactIDS = [[NSArray alloc] initWithObjects:@"585658565856", @"578988989988", nil];
-
-    NSNumber *name = [[NSNumber alloc] initWithString:hello];
-    NSNumber *owner = [[NSNumber alloc] initWithString:this is note];
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager dealAPI] add:note onCompletion:^(Note *note) {
-        
-        
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
     
-}
-```
-
-#### 4.3 Get task by ID
-
-
-```javascript
-- (IBAction)getTasks;
-{
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] getDealWithId:@"5655869022797824" onCompletion:^(Deal *deal) {
-        
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+    NSURLSession *session = [NSURLSession sharedSession];
     
-}
-```
-
-#### 4.4 Delete task by ID
-
-
-```javascript
-- (IBAction)deleteTaskById;
-{
-    AgileCRMManager *manager = [[AgileCRMManager alloc] initWithDomain:@"your_domain" andKey:@"your_rest_api_key" andEmail:@"your_email"];
-    [[manager contactAPI] remove:@"5754903989321728" onCompletion:^(BOOL success) {
-        if (success) {
-            NSLog (@"REMOVED");
-            self.result.text = @"REMOVED 5754903989321728";
-        }
-    } onError:^(NSError *originalError) {
-        NSLog(@"Error");
-    }];
+    [[session dataTaskWithRequest:request completionHandler:
+      ^(NSData *data, NSURLResponse *response, NSError *error) {
+          
+          NSLog(@"Hello success");
+          NSLog(@"response%@",response);
+          NSString *str = [[NSString alloc] initWithData: data encoding:NSUTF8StringEncoding];
+          NSLog(@"data%@",str);
+          
+      }] resume];
     
+    NSLog(@"End of test");
 }
+
 ```
