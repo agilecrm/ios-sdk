@@ -3,8 +3,6 @@ Agile CRM iOS SDK
 
 [Agile CRM] (https://www.agilecrm.com/) is a new breed CRM software with sales and marketing automation.
 
-- [**Reference**](https://github.com/agilecrm/rest-api)
-
 Table of contents
 ---------------
 
@@ -31,6 +29,8 @@ Table of contents
   * [2 To update a note](#32-to-update-a-note)
   * [3 Get note by ID](#33-get-note-by-id)
   * [4 Delete note by ID](#34-delete-note-by-id)
+
+- [**Reference**](https://github.com/agilecrm/rest-api)
  
 Requirements
 ------------
@@ -41,7 +41,7 @@ Requirements
 
 3. Setting domain name and API key
 
-4. You can pull all code from the git or just copy method from `https://github.com/agilecrm/ios-sdk/blob/master/iOSFile/AgileSDK/AgileSDK/ViewController.m`  and test directly with your domain,email and rest api key
+4. You can pull all code from the git or just copy method from [**iOS code**](https://github.com/agilecrm/ios-sdk/blob/master/iOSFile/AgileSDK/AgileSDK/ViewController.m)  and test directly with your domain,email and rest api key
 
 ![Finding domain name, email and API key] (https://raw.githubusercontent.com/agilecrm/c-sharp-api/master/AgileCRMapi.png)
 
