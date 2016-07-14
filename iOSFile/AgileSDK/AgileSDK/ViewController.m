@@ -24,15 +24,15 @@
     // Dispose of any resources that can be recreated.
 }
 - (IBAction)getContactById:(id)sender {
-    NSLog(@"hello12");
-    NSURL *url = [NSURL URLWithString: @"https://ghanshyam.agilecrm.com/dev/api/contacts/5745057659355136"];
+    NSLog(@"Get Contact By ID");
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts/5745057659355136"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
     [request setHTTPMethod:@"GET"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     
-    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"ghanshyam.raut@agilecrm.com", @"123456"];
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
     NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
     NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
     [request setValue:authValue forHTTPHeaderField:@"Authorization"];
@@ -54,15 +54,15 @@
 
 - (IBAction)deleteContactById:(id)sender {
     
-    NSLog(@"hello12");
-    NSURL *url = [NSURL URLWithString: @"https://ghanshyam.agilecrm.com/dev/api/contacts/5680432024649728"];
+    NSLog(@"delete contact by ID");
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts/5680432024649728"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
     [request setHTTPMethod:@"DELETE"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     
-    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"ghanshyam.raut@agilecrm.com", @"123456"];
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
     NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
     NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
     [request setValue:authValue forHTTPHeaderField:@"Authorization"];
@@ -92,11 +92,10 @@
                                                           options:0 error:NULL];
     
     NSLog(@"jsonObject=%@", jsonObject);
-    NSLog(@"hello12");
-    
+
     NSData *requestData = [colorArray dataUsingEncoding:NSUTF8StringEncoding];
     
-    NSURL *url = [NSURL URLWithString: @"https://ghanshyam.agilecrm.com/dev/api/contacts"];
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
     [request setHTTPMethod:@"POST"];
@@ -105,7 +104,7 @@
     [request setValue:[NSString stringWithFormat:@"%d", [requestData length]] forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody: requestData];
     
-    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"ghanshyam.raut@agilecrm.com", @"123456"];
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
     NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
     NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
     [request setValue:authValue forHTTPHeaderField:@"Authorization"];
@@ -135,11 +134,10 @@
                                                           options:0 error:NULL];
     
     NSLog(@"jsonObject=%@", jsonObject);
-    NSLog(@"hello12");
-    
+
     NSData *requestData = [colorArray dataUsingEncoding:NSUTF8StringEncoding];
     
-    NSURL *url = [NSURL URLWithString: @"https://ghanshyam.agilecrm.com/dev/api/contacts/edit-properties"];
+    NSURL *url = [NSURL URLWithString: @"https://{your_domain}.agilecrm.com/dev/api/contacts/edit-properties"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
     [request setHTTPMethod:@"PUT"];
@@ -148,7 +146,7 @@
     [request setValue:[NSString stringWithFormat:@"%d", [requestData length]] forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody: requestData];
     
-    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"ghanshyam.raut@agilecrm.com", @"123456"];
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", @"your_user_email", @"your_rest_api_key"];
     NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
     NSString *authValue = [NSString stringWithFormat:@"Basic %@", [authData base64EncodedStringWithOptions:0]];
     [request setValue:authValue forHTTPHeaderField:@"Authorization"];
