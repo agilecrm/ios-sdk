@@ -43,7 +43,7 @@ Requirements
 
 4. You can pull all code from the git or just copy method from [**iOS code**](https://github.com/agilecrm/ios-sdk/blob/master/iOSFile/AgileSDK/AgileSDK/ViewController.m)  and test directly with your domain,email and rest api key
 
-![Finding domain name, email and API key] (https://raw.githubusercontent.com/agilecrm/c-sharp-api/master/AgileCRMapi.png)
+![Finding domain name, email and API key](https://raw.githubusercontent.com/agilecrm/c-sharp-api/master/AgileCRMapi.png)
 
 In the above image, API key is present at the "API & Analytics" tab at `https://mycompany.agilecrm.com/#account-prefs`.
 
